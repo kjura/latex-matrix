@@ -71,12 +71,6 @@ fn main() {
 
     validate_row_input_erros(matrix_errors, cols);
 
-    let mut delimiters_container = Vec::<String>::new();
-    for _ in rows_container.iter().rev().skip(1).rev(){
-        delimiters_container.push(" & ".to_string());
-    }
-    delimiters_container.push(r" \\ ".to_string());
-
 
     let begin_mark = "$ \\begin{".to_owned() + &matrix_type + "}";
     let end_mark = "\\end{".to_owned() + &matrix_type + "} $";
