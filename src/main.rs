@@ -1,18 +1,6 @@
-use std::{io::{self, BufRead}, iter::zip};
+use std::io::{self, BufRead};
 
 
-
-struct UserInput {
-    matrix_type: String,
-    rows: String,
-    cols: String
-}
-
-// impl UserInput {
-//     fn extract_user_input(stdin: Stdin) {
-
-//     }
-// }
 
 fn validate_matrix_type(user_input: &String, types_container: Vec<&str>) {
     if !types_container.contains(&user_input.as_str()) {
@@ -83,12 +71,6 @@ fn main() {
 
     validate_row_input_erros(matrix_errors, cols);
 
-
-    let begin_mark = "$ \\begin{".to_owned() + &matrix_type + "}";
-    let end_mark = "\\end{".to_owned() + &matrix_type + "} $";
-
-    let delimiters_container = rows_container.iter().rev().skip(1);
-
     let mut delimiters_container = Vec::<String>::new();
     for _ in rows_container.iter().rev().skip(1).rev(){
         delimiters_container.push(" & ".to_string());
@@ -96,28 +78,27 @@ fn main() {
     delimiters_container.push(r" \\ ".to_string());
 
 
+    let begin_mark = "$ \\begin{".to_owned() + &matrix_type + "}";
+    let end_mark = "\\end{".to_owned() + &matrix_type + "} $";
+    let last_row_of_data = rows_container.last().unwrap().clone().into_iter().rev().flat_map(|i| [i, String::from("&")]).rev().skip(1).collect::<Vec<String>>().join(" ");
+
     println!("{}", begin_mark);
-    for row in rows_container {
-        let mut temp_row_formatter = String::new();
-        for (elem, delimit) in zip(row, delimiters_container.clone()) {
-            temp_row_formatter += &(elem + &delimit.to_string());
-            println!("{}", temp_row_formatter)
-        }
+    for row in rows_container.iter().rev().skip(1).rev() {
+
+        let mut formatted_row: Vec<String> = 
+        row
+        .clone()
+        .into_iter()
+        .rev()
+        .flat_map(|i| [i, String::from("&")])
+        .rev()
+        .skip(1)
+        .collect();
+        formatted_row.push("\\\\".to_string());
+        println!("{}", formatted_row.join(" "))
+
     }
+    println!("{}", last_row_of_data);
     println!("{}", end_mark);
-
-
-
-    // "35 67 89" => "35 & 67 & 89"
-    // vec![42, 56, 78] ==> "42 & 56 & 78"
-
-    // $ \begin{bmatrix}
-    // a_1 & a_2 & a_3 \\
-    // b_1 & b_2 & b_3 \\
-    // c_1 & c_2 & c_3 
-    // \end{bmatrix}  $
-
-
-    // $ \begin{bmatrix} a_1 & a_2 & a_3 \\ b_1 & b_2 & b_3 \\ c_1 & c_2 & c_3 \end{bmatrix}  $
 
 }
